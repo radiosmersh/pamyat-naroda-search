@@ -244,6 +244,7 @@ $(document).ready(function() {
                             row._source.fond + '</td><td>' +
                             row._source.opis + '</td><td>' +
                             row._source.delo + '</td><td>' +
+                            row._source.list + '</td><td>' +
                             row._source.document_name + '</td><td>' +
                             row._source.authors + '</td><td class="nowrap">' +
                             row._source.document_date_b + '</td></tr>';
@@ -263,7 +264,8 @@ $(document).ready(function() {
     if ($('#advanced_settings').prop("checked")) {
         $('#advanced').show();
     }
-    $('#advanced_settings').on('change', function() {
+    $('#advanced_settings').on('change', function(event) {
+        event.preventDefault();
         $('#advanced').toggle();
     });
 
