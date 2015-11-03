@@ -355,7 +355,7 @@ $(document).ready(function() {
         }
 
         var sort = $("#sort").val()
-        if (sort != '') {
+        if (sort) {
             var temp = {};
             if (jbd && sort == "document_date_b") {
                 sort = "date_from"
