@@ -75,7 +75,7 @@
     #dou [class^="pure-u"] {
         padding: .2em;
     }
-
+    
     #dou .pure-menu {
         margin-bottom: .3em;
     }
@@ -93,7 +93,7 @@
         margin: 20px auto;
         border-radius: 4px;
     }
-
+    
     .button-group > li:first-child > label > .pure-button {
         border-radius: 1000px 0 0 1000px;
         padding-right: 0.7em;
@@ -121,9 +121,10 @@
         background-image: none;
         position: relative;
         z-index: 2;
-/*        border: 2px solid #99BFE6;
+        /*        border: 2px solid #99BFE6;
         background-color: #F0F8FF;
-*/    }
+*/
+    }
     
     input[type=submit].pure-button {
         font-weight: bold;
@@ -135,11 +136,15 @@
         bottom: 0px;
     }*/
     
+    input[type="number"]::-webkit-outer-spin-button {
+        display: none;
+    }
+    
     #dou input,
     #dou select {
         box-shadow: none;
     }
-
+    
     #dou input,
     #dou select,
     #advanced textarea {
