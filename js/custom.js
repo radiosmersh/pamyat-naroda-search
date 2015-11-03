@@ -141,7 +141,7 @@ $(document).ready(function() {
                     data.hits.hits.forEach(function(row) {
                         trHTML +=
                             '<tr><td><a href="https://pamyat-naroda.ru/dou/?docID=' +
-                            row._id + '">' + row._id + '</a></td><td>' +
+                            row._id + '" target="_blank">' + row._id + '</a></td><td>' +
                             (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
                             (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
                             (row.fields.delo && row.fields.delo[0]) + '</td><td>' +
@@ -196,7 +196,7 @@ $(document).ready(function() {
                     data.hits.hits.forEach(function(row) {
                         trHTML +=
                             '<tr><td><a href="https://pamyat-naroda.ru/jbd/' +
-                            row._id + '">' + row._id + '</a></td><td>' +
+                            row._id + '" target="_blank">' + row._id + '</a></td><td>' +
                             (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
                             (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
                             (row.fields.delo && row.fields.delo[0]) + '</td><td>' +
