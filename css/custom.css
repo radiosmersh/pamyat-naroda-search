@@ -93,6 +93,14 @@
         margin: 20px auto;
         border-radius: 4px;
     }
+
+    #info p {
+        margin-bottom: .3em;
+    }
+
+    #info ul {
+        margin-top: 0;
+    }
     
     .button-group > li:first-child > label > .pure-button {
         border-radius: 1000px 0 0 1000px;
