@@ -88,6 +88,11 @@ $(document).ready(function() {
                 "query": {
                     "bool": {
                         "must": [],
+                        "must_not": [{
+                            "match": {
+                                "secr": "ns"
+                            }
+                        }],
                         "should": [],
                         "minimum_should_match": 1
                     }
@@ -106,17 +111,29 @@ $(document).ready(function() {
         },
         "fields": ["operation", "id", "document_type", "document_number",
             "document_date_b", "document_date_f", "document_name", "fond", "opis", "delo",
-            "list", "date_from", "date_to", "authors", "geo_names", "image_path", "deal_type"
+            "list", "date_from", "date_to", "authors", "image_path", "deal_type",
+            "geo_names", "location.lat", "max_dolgota", "max_shirota", "max_zoom",
+            "min_dolgota", "min_shirota", "operation_name"
         ]
     };
 
 
-    var get_dou = function() {
+    jQuery.fn.get_data = function() {
+        if (jbd) {
+            var url = 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search';
+            tableID = "#jbd_table";
+            var link = 'https://pamyat-naroda.ru/jbd/';
+        } else {
+            var url = 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine,document,map/_search';
+            tableID = "#dou_table";
+            var link = 'https://pamyat-naroda.ru/dou/?docID=';
+        }
+
         $('.results table, .pagination').hide();
-        $('#dou_table tbody').empty();
+        $('tbody', tableID).empty();
 
         $.ajax({
-            url: "https://cdn.pamyat-naroda.ru/ind/pamyat/document/_search",
+            url: url,
             type: "POST",
             data: JSON.stringify(params),
             contentType: 'text/plain',
@@ -130,32 +147,41 @@ $(document).ready(function() {
             success: function(data) {
                 response = data;
                 console.log('[*]Response:', data);
-                $('#res').val(JSON.stringify(data));
+                $('#res').val(JSON.stringify(data, null, 2));
                 $('.message').html(
                     'Загружено <b>' + data.hits.hits.length +
                     '</b> результатов из <b>' + data.hits.total + '</b>'
                 );
 
                 if (data.hits.total > 0) {
-                    var trHTML = '';
+                    trHTML = '';
                     data.hits.hits.forEach(function(row) {
                         trHTML +=
-                            '<tr><td><a href="https://pamyat-naroda.ru/dou/?docID=' +
-                            row._id + '" target="_blank">' + row._id + '</a></td><td>' +
+                            '<tr><td><a href="' + link + row._id + '" target="_blank">' +
+                            row._id + '</a></td><td>' +
                             (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
                             (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
                             (row.fields.delo && row.fields.delo[0]) + '</td><td>' +
                             (row.fields.list && row.fields.list[0]) + '</td><td>' +
                             (row.fields.document_name && row.fields.document_name[0]) +
                             '</td><td>' +
-                            (row.fields.authors && row.fields.authors[0]) +
-                            '</td><td class="nowrap">' +
-                            (row.fields.document_date_b && row.fields.document_date_b[0]) +
-                            '</td></tr>';
+                            (row.fields.authors && row.fields.authors[0]) + '</td>';
+
+                        if (jbd) {
+                            trHTML += '<td class="nowrap">' + (row.fields.date_from &&
+                                    row.fields.date_from[0]) +
+                                '</td><td class="nowrap">' + (row.fields.date_to && row
+                                    .fields.date_to[0]) + '</td></tr>';
+                        } else {
+                            trHTML += '<td class="nowrap">' +
+                                (row.fields.document_date_b && row.fields.document_date_b[
+                                    0]) + '</td></tr>';
+                        }
                     });
-                    $('#dou_table tbody').append(trHTML);
-                    $("#dou_table").trigger("update");
-                    $('#dou_table').show();
+
+                    $('tbody', tableID).append(trHTML);
+                    $(tableID).trigger("update");
+                    $(tableID).show();
 
                     if (data.hits.total > params.size) {
                         $('.pagination').css('display', 'block');
@@ -166,64 +192,8 @@ $(document).ready(function() {
     };
 
 
-    var get_jbd = function() {
-        $('.results table, .pagination').hide();
-        $('#jbd_table tbody').empty();
-
-        $.ajax({
-            url: "https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search",
-            type: "POST",
-            data: JSON.stringify(params),
-            contentType: 'text/plain',
-            dataType: 'json',
-            error: function(data) {
-                response = data;
-                console.log('[*]Error:', data);
-                $('#res').val(data.responseText);
-                $('.message').html('<b>Ошибка загрузки!</b>');
-            },
-            success: function(data) {
-                response = data;
-                console.log('[*]Response:', data);
-                $('#res').val(JSON.stringify(data));
-                $('.message').html(
-                    'Загружено <b>' + data.hits.hits.length +
-                    '</b> результатов из <b>' + data.hits.total + '</b>'
-                );
-
-                if (data.hits.total > 0) {
-                    var trHTML = '';
-                    data.hits.hits.forEach(function(row) {
-                        trHTML +=
-                            '<tr><td><a href="https://pamyat-naroda.ru/jbd/' +
-                            row._id + '" target="_blank">' + row._id + '</a></td><td>' +
-                            (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
-                            (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
-                            (row.fields.delo && row.fields.delo[0]) + '</td><td>' +
-                            (row.fields.list && row.fields.list[0]) + '</td><td>' +
-                            (row.fields.document_name && row.fields.document_name[0]) +
-                            '</td><td>' +
-                            (row.fields.authors && row.fields.authors[0]) +
-                            '</td><td class="nowrap">' +
-                            (row.fields.date_from && row.fields.date_from[0]) +
-                            '</td><td class="nowrap">' +
-                            (row.fields.date_to && row.fields.date_to[0]) +
-                            '</td></tr>';
-                    });
-                    $('#jbd_table tbody').append(trHTML);
-                    $("#jbd_table").trigger("update");
-                    $('#jbd_table').show();
-
-                    if (data.hits.total > params.size) {
-                        $('.pagination').css('display', 'block');
-                    }
-                }
-            }
-        });
-    };
-
-
-    var jbd, get_data;
+    var jbd = false;
+    var params;
 
     build_params();
 
@@ -232,51 +202,49 @@ $(document).ready(function() {
     });
     $('#dou').on('submit', function(event) {
         event.preventDefault();
-        get_data();
+        $.fn.get_data();
     });
 
 
     function build_params() {
         params = JSON.parse(JSON.stringify(params_template));
 
-        jbd = $('input[name=switch]:checked').val() == 'jbd' ? true : false
-
-        get_data = jbd ? get_jbd : get_dou
+        jbd = $('input[name=switch]:checked').val() == 'jbd' ? true : false;
 
         if (jbd) {
-            if ($("#date_beg").val() != '') {
+            if ($("#date_beg").val().trim() != '') {
                 params.query.filtered.filter.bool.must.push({
                     "range": {
                         "date_to": {
-                            "gte": $("#date_beg").val()
+                            "gte": $("#date_beg").val().trim()
                         }
                     }
                 });
             }
-            if ($("#date_end").val() != '') {
+            if ($("#date_end").val().trim() != '') {
                 params.query.filtered.filter.bool.must.push({
                     "range": {
                         "date_from": {
-                            "lte": $("#date_end").val()
+                            "lte": $("#date_end").val().trim()
                         }
                     }
                 });
             }
         } else {
-            if ($("#date_beg").val() != '') {
+            if ($("#date_beg").val().trim() != '') {
                 params.query.filtered.filter.bool.must.push({
                     "range": {
                         "document_date_b": {
-                            "gte": $("#date_beg").val()
+                            "gte": $("#date_beg").val().trim()
                         }
                     }
                 });
             }
-            if ($("#date_end").val() != '') {
+            if ($("#date_end").val().trim() != '') {
                 params.query.filtered.filter.bool.must.push({
                     "range": {
                         "document_date_b": {
-                            "lte": $("#date_end").val()
+                            "lte": $("#date_end").val().trim()
                         }
                     }
                 });
@@ -284,81 +252,81 @@ $(document).ready(function() {
             $("#checkboxes div input:checked").each(function(k, v) {
                 params.query.filtered.query.bool.should.push({
                     "match_phrase": {
-                        "document_type": v.value
+                        "document_type": v.value.trim()
                     }
                 });
             });
         }
 
-        if ($("#fond").val() != '') {
+        if ($("#fond").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 "match": {
-                    "fond": $("#fond").val()
+                    "fond": $("#fond").val().trim()
                 }
             });
         }
-        if ($("#opis").val() != '') {
+        if ($("#opis").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 "match": {
-                    "opis": $("#opis").val()
+                    "opis": $("#opis").val().trim()
                 }
             });
         }
-        if ($("#delo").val() != '') {
+        if ($("#delo").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 "match": {
-                    "delo": $("#delo").val()
+                    "delo": $("#delo").val().trim()
                 }
             });
         }
-        if ($("#doc_id").val() != '') {
+        if ($("#doc_id").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 "match": {
-                    "id": $("#doc_id").val()
+                    "id": $("#doc_id").val().trim()
                 }
             });
         }
-        if ($("#doc_name").val() != '') {
+        if ($("#doc_name").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 //                 "match_phrase": {
                 //                     "document_name": {
-                //                        "query":$("#doc_name").val(),
+                //                        "query":$("#doc_name").val().trim(),
                 //                        "slop":  1
                 //                      }
                 //                 }
                 "match": {
                     "document_name": {
-                        "query": $("#doc_name").val(),
+                        "query": $("#doc_name").val().trim(),
                         "operator": "and"
                     }
                 }
             });
         }
-        if ($("#author").val() != '') {
+        if ($("#author").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
                 "match_phrase": {
                     "authors": {
-                        "query": $("#author").val(),
+                        "query": $("#author").val().trim(),
                         "slop": 1 // макс расстояние между словами
                     }
                 }
                 //                     "match": {
                 //                         "authors": {
-                //                             "query": $("#author").val(),
+                //                             "query": $("#author").val().trim(),
                 //                             "operator": "and"
                 //                         }
                 //                     }
             });
         }
-        if ($("#size").val() != '') {
-            params.size = parseInt($("#size").val());
+        if ($("#size").val().trim() != '') {
+            params.size = parseInt($("#size").val().trim());
         }
 
-        var sort = $("#sort").val()
+        var sort = $("#sort").val().trim();
         if (sort) {
             var temp = {};
             if (jbd && sort == "document_date_b") {
-                sort = "date_from"
+                sort = "date_from";
             }
             temp[sort] = "asc";
             params.sort = temp;
@@ -377,14 +345,14 @@ $(document).ready(function() {
     });
 
     $('#params').on('change', function() {
-        params = JSON.parse($('#params').val());
+        params = JSON.parse($('#params').val().trim());
     });
 
     $(".next").on('click', function() {
         if (response.hits.total > (params.size + params.from)) {
             params.from += params.size;
             $('#params').val(JSON.stringify(params));
-            get_data();
+            $.fn.get_data();
         }
     });
 
@@ -392,7 +360,7 @@ $(document).ready(function() {
         if (params.from > 0) {
             params.from -= params.size;
             $('#params').val(JSON.stringify(params));
-            get_data();
+            $.fn.get_data();
         }
     });
 

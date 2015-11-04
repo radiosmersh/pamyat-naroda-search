@@ -58,9 +58,16 @@
     .form-container {
         max-width: 1100px;
     }
+
+    @media only screen and (max-width:480px) {
+        .pure-menu-item > button {
+            margin: .5em 0 .3em;
+        }
+    }
     
-    .ui-widget select {
+    .pure-grids .ui-datepicker .ui-datepicker-title select {
         font-weight: normal;
+        font-size: .9em;
     }
     
     #advanced textarea {
@@ -199,6 +206,10 @@
         display: block;
         margin: 0;
         padding: .2em .3em;
+    }
+    
+    #checkboxes > label {
+        padding-top: .4em;
     }
     
     #checkboxes label:hover {
