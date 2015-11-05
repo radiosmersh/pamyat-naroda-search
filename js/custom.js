@@ -40,11 +40,11 @@ $(document).ready(function() {
 
     $(".results table").tablesorter();
 
-    $("input[type=text], input[type=date]").addClear({
-        right: 10,
-        showOnLoad: true,
-        onClear: build_params
-    });
+    // $("input[type=text], input[type=date]").addClear({
+    //     right: 10,
+    //     showOnLoad: true,
+    //     onClear: build_params
+    // });
 
     $.datepicker.setDefaults($.datepicker.regional["ru"]);
     $.datepicker.setDefaults({
