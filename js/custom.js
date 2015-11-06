@@ -88,11 +88,13 @@ $(document).ready(function() {
                 "query": {
                     "bool": {
                         "must": [],
-                        "must_not": [{
-                            "match": {
-                                "secr": "ns"
-                            }
-                        }],
+                        "must_not": [
+                            // {
+                            //     "match": {
+                            //         "secr": "ns"
+                            //     }
+                            // }
+                        ],
                         "should": [],
                         "minimum_should_match": 1
                     }
@@ -109,12 +111,18 @@ $(document).ready(function() {
         "sort": {
             "document_date_b": "asc"
         },
-        "fields": ["operation", "id", "document_type", "document_number",
-            "document_date_b", "document_date_f", "document_name", "fond", "opis", "delo",
-            "list", "date_from", "date_to", "authors", "image_path", "deal_type",
-            "geo_names", "location.lat", "max_dolgota", "max_shirota", "max_zoom",
-            "min_dolgota", "min_shirota", "operation_name"
-        ]
+        "fields": ["id", "document_type", "document_date_b", "document_date_f", "document_name",
+                "fond", "opis", "delo", "list", "date_from", "date_to", "authors", "image_path"
+            ]
+            // "_source": {
+            //     "include": ["id", "document_type", "document_name", "authors",
+            //         "document_date_b", "document_date_f", "date_from", "date_to",
+            //         "fond", "opis", "delo", "list", "image_path", "document_number", "archive",
+            //         "location", "location", "max_dolgota", "max_shirota", "max_zoom", "min_dolgota",
+            //         "min_shirota",
+            //         "geo_names", "operation", "operation_name", "secr"
+            //     ]
+            // }
     };
 
 
@@ -147,7 +155,7 @@ $(document).ready(function() {
             success: function(data) {
                 response = data;
                 console.log('[*]Response:', data);
-                $('#res').val(JSON.stringify(data, null, 2));
+                $('#res').val(JSON.stringify(data));
                 $('.message').html(
                     'Загружено <b>' + data.hits.hits.length +
                     '</b> результатов из <b>' + data.hits.total + '</b>'
