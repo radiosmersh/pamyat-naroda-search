@@ -18,12 +18,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <meta description="Поиск по журналам боевых действий и оперативным документам сайта pamyat-naroda.ru с возможностью фильтрации по архивным полям.">
-    
+
     <title>Поиск оперативных документов</title>
 </head>
 
 <body class="pure-grids">
-    <div class="pure-g form-container">
+    <div class="pure-g" id="form-container">
         <form id="dou" class="pure-form pure-u-1 pure-u-lg-3-4 border">
             <div class="pure-u-1 pure-menu pure-menu-horizontal">
                 <ul class="pure-menu-list">
@@ -32,7 +32,7 @@
                         <label for="radio_dou">
                             <input type="radio" id="radio_dou" value="dou" name="switch" toggle checked>
                             <span class="pure-button">ДОУ</span>
-                        </label>
+                    </label>
                     </li>
                     <li class="pure-menu-item">
                         <label for="radio_jbd">
@@ -149,7 +149,10 @@
             </div>
         </form>
 
-        <form id="advanced" class="pure-form pure-form-aligned pure-u-1">
+        <form id="advanced" class="pure-form pure-form-aligned">
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="text" id="apiURL" name="apiURL" placeholder="CUSTOM API URL">
+            </div>
             <div class="pure-u-1">
                 <textarea id="params" cols="130" rows="2" spellcheck='false'>
                 </textarea>

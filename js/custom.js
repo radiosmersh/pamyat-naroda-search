@@ -43,7 +43,8 @@ $(document).ready(function() {
     $("input[type=text], input[type=date]").addClear({
         right: 10,
         showOnLoad: true,
-        onClear: build_params
+        tabbable: false,
+        returnFocus: false
     });
 
     $.datepicker.setDefaults($.datepicker.regional["ru"]);
@@ -125,18 +126,24 @@ $(document).ready(function() {
             // }
     };
 
-
+    var customAPI, url;
+    $('#apiURL').val('');
+    $('#apiURL').on('change', function () {
+        customAPI = $('#apiURL').val();
+    });
+    
     jQuery.fn.get_data = function() {
         if (jbd) {
-            var url = 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search';
+            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search';
             tableID = "#jbd_table";
             var link = 'https://pamyat-naroda.ru/jbd/';
         } else {
-            var url = 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine,document,map/_search';
+            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/document,map/_search';
             tableID = "#dou_table";
             var link = 'https://pamyat-naroda.ru/dou/?docID=';
         }
-
+        console.log('customAPI', customAPI);
+        console.log(url);
         $('.results table, .pagination').hide();
         $('tbody', tableID).empty();
 
@@ -165,7 +172,8 @@ $(document).ready(function() {
                     trHTML = '';
                     data.hits.hits.forEach(function(row) {
                         trHTML +=
-                            '<tr><td><a href="' + link + row._id + '" target="_blank">' +
+                            '<tr><td><a href="' + link + row._id +
+                            '" target="_blank">' +
                             row._id + '</a></td><td>' +
                             (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
                             (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
@@ -178,7 +186,8 @@ $(document).ready(function() {
                         if (jbd) {
                             trHTML += '<td class="nowrap">' + (row.fields.date_from &&
                                     row.fields.date_from[0]) +
-                                '</td><td class="nowrap">' + (row.fields.date_to && row
+                                '</td><td class="nowrap">' + (row.fields.date_to &&
+                                    row
                                     .fields.date_to[0]) + '</td></tr>';
                         } else {
                             trHTML += '<td class="nowrap">' +
@@ -289,7 +298,7 @@ $(document).ready(function() {
         }
         if ($("#doc_id").val().trim() != '') {
             params.query.filtered.query.bool.must.push({
-                "match": {
+                "term": {
                     "id": $("#doc_id").val().trim()
                 }
             });
