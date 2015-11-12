@@ -55,15 +55,26 @@
         border: 1px solid #129FEA;
     }
     
-    .form-container {
+    #form-container {
         max-width: 1100px;
     }
-    
-    .ui-widget select {
-        font-weight: normal;
+
+    @media only screen and (max-width:480px) {
+        .pure-menu-item > button {
+            margin: .5em 0 .3em;
+        }
     }
     
-    #advanced textarea {
+    .pure-grids .ui-datepicker .ui-datepicker-title select {
+        font-weight: normal;
+        font-size: .9em;
+    }
+
+    input#apiURL {
+        /*color: red;*/
+    }
+    
+    #advanced textarea, #advanced input {
         width: 100%;
         margin: 0.2em 0 0.2em;
     }
@@ -150,22 +161,22 @@
         margin: 0;
     }
     
-    #dou input,
-    #dou select {
+    #form-container input,
+    #form-container select {
         box-shadow: none;
     }
     
-    #dou input,
-    #dou select,
-    #advanced textarea {
+    #form-container input,
+    #form-container select,
+    #form-container textarea {
         border-color: #999;
         transition: border-color 0.1s ease-in-out 0s, box-shadow 0.1s ease-in-out 0s;
     }
     
-    #dou input:not([type=submit]):focus,
-    #dou select:focus,
-    #advanced textarea:focus,
-    #dou .multiselect.active select {
+    #form-container input:not([type=submit]):focus,
+    #form-container select:focus,
+    #form-container textarea:focus,
+    #form-container .multiselect.active select {
         border-color: #129FEA;
         box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px rgba(102, 175, 233, .6);
     }
@@ -201,12 +212,17 @@
         left: 0;
         right: 0;
         background-color: white;
+        z-index: 10;
     }
     
     #checkboxes label {
         display: block;
         margin: 0;
         padding: .2em .3em;
+    }
+    
+    #checkboxes > label {
+        padding-top: .4em;
     }
     
     #checkboxes label:hover {
