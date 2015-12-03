@@ -96,15 +96,17 @@ $(document).ready(function() {
         },
         "size": 20,
         "from": 0,
-        "sort": {
-            "document_date_b": "asc"
-        },
+        // "sort": {
+        //     "document_date_b": "asc"
+        // },
         "fields": ["operation", "id", "document_type", "document_number",
             "document_date_b", "document_date_f", "document_name", "fond", "opis", "delo",
             "list", "date_from", "date_to", "authors", "geo_names", "image_path", "deal_type"
         ]
     };
+
     var customAPI, url;
+
     $('#apiURL').val('');
     $('#apiURL').on('change', function() {
         customAPI = $('#apiURL').val();
@@ -190,7 +192,7 @@ $(document).ready(function() {
     var jbd = false;
     var params;
     build_params();
-    $("#dou").on('change', function() {
+    $("#dou, input[name=switch]").on('change', function() {
         build_params();
     });
     $('#dou, #advanced').on('submit', function(event) {
@@ -276,43 +278,52 @@ $(document).ready(function() {
                 }
             });
         }
-        if ($("#doc_name").val().trim() != '') {
+        // if ($("#doc_name").val().trim() != '') {
+        //     params.query.filtered.query.bool.must.push({
+        //         "match": {
+        //             "document_name": {
+        //                 "query": $("#doc_name").val().trim(),
+        //                 "operator": "and"
+        //             }
+        //         }
+        //     });
+        // }
+
+        var document_name = $("#doc_name").val().trim();
+        if (document_name != '') {
             params.query.filtered.query.bool.must.push({
-                //                 "match_phrase": {
-                //                     "document_name": {
-                //                        "query":$("#doc_name").val().trim(),
-                //                        "slop":  1
-                //                      }
-                //                 }
-                "match": {
-                    "document_name": {
-                        "query": $("#doc_name").val().trim(),
-                        "operator": "and"
-                    }
+                "query_string": {
+                    "query": document_name,
+                    "default_field": "document_name",
+                    "default_operator": "and"
+                        // "analyze_wildcard": "true"
                 }
             });
         }
-        if ($("#author").val().trim() != '') {
+
+        var author = $("#author").val().trim();
+        if (author != '') {
             params.query.filtered.query.bool.must.push({
-                "match_phrase": {
-                    "authors": {
-                        "query": $("#author").val().trim(),
-                        "slop": 1 // макс расстояние между словами
-                    }
+                //     "match_phrase": {
+                //         "authors": {
+                //             "query": author,
+                //             "slop": 1 // макс расстояние между словами
+                //         }
+                //     }
+                "query_string": {
+                    "query": author,
+                    "default_field": "authors",
+                    "default_operator": "and"
                 }
-                //                     "match": {
-                //                         "authors": {
-                //                             "query": $("#author").val().trim(),
-                //                             "operator": "and"
-                //                         }
-                //                     }
             });
         }
+
         if ($("#size").val().trim() != '') {
             params.size = parseInt($("#size").val().trim());
         }
+
         var sort = $("#sort").val().trim();
-        if (sort) {
+        if (sort && sort !== 'match') {
             var temp = {};
             if (jbd && sort == "document_date_b") {
                 sort = "date_from";
@@ -320,8 +331,10 @@ $(document).ready(function() {
             temp[sort] = "asc";
             params.sort = temp;
         }
+
         $('#params').val(JSON.stringify(params));
     };
+
     if ($('#advanced_settings').prop("checked")) {
         $('#advanced').show();
     }
@@ -332,6 +345,7 @@ $(document).ready(function() {
     $('#params').on('change', function() {
         params = JSON.parse($('#params').val().trim());
     });
+
     $(".next").on('click', function() {
         if (response.hits.total > (params.size + params.from)) {
             params.from += params.size;
@@ -346,6 +360,14 @@ $(document).ready(function() {
             $.fn.get_data();
         }
     });
+
+    $('#reset_dou').on('click', function(e) {
+        e.preventDefault();
+        $('#dou')[0].reset();
+        $('#dou input[type=text]').val('').trigger('keyup');
+        $('#dou').trigger('change');
+    });
+
     // Checkboxes
     $('.selectBox').click(function(e) {
         $('#checkboxes').toggle();
@@ -358,19 +380,20 @@ $(document).ready(function() {
             $('.multiselect').removeClass('active');
         }
     });
-    $("#reset").on('change', function() {
+    $("#reset_checkboxes").on('change', function() {
         if (this.checked) {
             $('#checkboxes div input').prop('checked', false);
         }
     });
     $("#checkboxes div input").on('change', function() {
         if ($("#checkboxes div input[type=checkbox]:checked").length == 0) {
-            $('#reset').prop('checked', true);
+            $('#reset_checkboxes').prop('checked', true);
         }
         else {
-            $('#reset').prop('checked', false);
+            $('#reset_checkboxes').prop('checked', false);
         }
     });
+
     //Popup
     var nick = 'venireman';
     var message = '<p>Если поиск перестанет работать, пишите на <a href="mailto:' + nick +

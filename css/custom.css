@@ -30,7 +30,7 @@
     }
     
     .message {
-        padding-top: 6px;
+        padding: 10px 0 4px;
     }
     
     .pagination,
@@ -41,6 +41,7 @@
     
     .results table {
         display: none;
+        margin: 5px 0 5px;
     }
     
     .prev,
@@ -69,10 +70,6 @@
         font-weight: normal;
         font-size: .9em;
     }
-
-    input#apiURL {
-        /*color: red;*/
-    }
     
     #advanced textarea, #advanced input {
         width: 100%;
@@ -83,11 +80,11 @@
         color: black;
     }
     
-    #dou [class^="pure-u"] {
+    [class^="pure-u"] {
         padding: .2em;
     }
     
-    #dou .pure-menu {
+    .pure-menu {
         margin-bottom: .3em;
     }
     
@@ -100,7 +97,7 @@
         background: #FFF;
         padding: 20px;
         width: auto;
-        max-width: 600px;
+        max-width: 800px;
         margin: 20px auto;
         border-radius: 4px;
     }
@@ -160,7 +157,7 @@
         -webkit-appearance: none;
         margin: 0;
     }
-    
+
     #form-container input,
     #form-container select {
         box-shadow: none;
