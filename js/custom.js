@@ -159,10 +159,10 @@ $(document).ready(function() {
                         }
                         trHTML +=
                             '<tr><td>' + link + '</td><td class="nowrap">' +
-                            (row.fields.fond && row.fields.fond[0]) + '</td><td class="nowrap">' +
-                            (row.fields.opis && row.fields.opis[0]) + '</td><td class="nowrap">' +
-                            (row.fields.delo && row.fields.delo[0]) + '</td><td class="nowrap">' +
-                            (row.fields.list && row.fields.list[0]) + '</td><td>' +
+                            (row.fields.fond ? row.fields.fond[0] : '') + '</td><td class="nowrap">' +
+                            (row.fields.opis ? row.fields.opis[0] : '') + '</td><td class="nowrap">' +
+                            (row.fields.delo ? row.fields.delo[0] : '') + '</td><td class="nowrap">' +
+                            (row.fields.list ? row.fields.list[0] : '') + '</td><td>' +
                             (row.fields.document_name && row.fields.document_name[0]) +
                             '</td><td>' +
                             (row.fields.authors && row.fields.authors[0]) + '</td>';
