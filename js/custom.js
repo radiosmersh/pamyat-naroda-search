@@ -158,10 +158,10 @@ $(document).ready(function() {
                             link = row._id;
                         }
                         trHTML +=
-                            '<tr><td>' + link + '</td><td>' +
-                            (row.fields.fond && row.fields.fond[0]) + '</td><td>' +
-                            (row.fields.opis && row.fields.opis[0]) + '</td><td>' +
-                            (row.fields.delo && row.fields.delo[0]) + '</td><td>' +
+                            '<tr><td>' + link + '</td><td class="nowrap">' +
+                            (row.fields.fond && row.fields.fond[0]) + '</td><td class="nowrap">' +
+                            (row.fields.opis && row.fields.opis[0]) + '</td><td class="nowrap">' +
+                            (row.fields.delo && row.fields.delo[0]) + '</td><td class="nowrap">' +
                             (row.fields.list && row.fields.list[0]) + '</td><td>' +
                             (row.fields.document_name && row.fields.document_name[0]) +
                             '</td><td>' +
