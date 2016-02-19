@@ -328,7 +328,12 @@ $(document).ready(function() {
             if (jbd && sort == "document_date_b") {
                 sort = "date_from";
             }
-            temp[sort] = "asc";
+            if (sort == "id") {
+                temp[sort] = "desc";
+            }
+            else {
+                temp[sort] = "asc";
+            }
             params.sort = temp;
         }
 
