@@ -147,11 +147,11 @@ $(document).ready(function() {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
                         if (row['_type'] === 'magazine') {
-                            link = '<a href="' + 'https://pamyat-naroda.ru/jbd/' +
+                            link = '<a href="' + 'https://pamyatnaroda.mil.ru/jbd/' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
                         }
                         else if (row['_type'] === 'document') {
-                            link = '<a href="' + 'https://pamyat-naroda.ru/dou/?docID=' +
+                            link = '<a href="' + 'https://pamyatnaroda.mil.ru/dou/?docID=' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
                         }
                         else if (row['_type'] === 'map') {
