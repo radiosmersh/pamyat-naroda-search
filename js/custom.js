@@ -114,13 +114,13 @@ $(document).ready(function() {
     jQuery.fn.get_data = function() {
         var tableID, link;
         if (jbd) {
-            // url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/magazine/_search';
-            url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/magazine/_search';
+            url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/magazine/_search';
+            /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/magazine/_search';*/
             tableID = "#jbd_table";
         }
         else {
-            // url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/document,map/_search';
-            url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/document,map/_search';
+            url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/document,map/_search';
+            /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/document,map/_search';*/
             tableID = "#dou_table";
         }
         $('.results table, .pagination').hide();
