@@ -114,12 +114,14 @@ $(document).ready(function() {
     jQuery.fn.get_data = function() {
         var tableID, link;
         if (jbd) {
-            url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/magazine/_search';
+            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search';
+            /*url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/magazine/_search';*/
             /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/magazine/_search';*/
             tableID = "#jbd_table";
         }
         else {
-            url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/document,map/_search';
+            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/document,map/_search';
+            /*url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/document,map/_search';*/
             /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/document,map/_search';*/
             tableID = "#dou_table";
         }
@@ -149,11 +151,11 @@ $(document).ready(function() {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
                         if (row['_type'] === 'magazine') {
-                            link = '<a href="' + 'https://pamyatnaroda.mil.ru/jbd/' +
+                            link = '<a href="' + 'https://pamyat-naroda.ru/jbd/' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
                         }
                         else if (row['_type'] === 'document') {
-                            link = '<a href="' + 'https://pamyatnaroda.mil.ru/dou/?docID=' +
+                            link = '<a href="' + 'https://pamyat-naroda.ru/dou/?docID=' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
                         }
                         else if (row['_type'] === 'map') {
