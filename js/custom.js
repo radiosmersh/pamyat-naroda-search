@@ -26,6 +26,64 @@ jQuery(function($) {
     $.datepicker.setDefaults($.datepicker.regional['ru']);
 });
 
+function copyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+
+    //
+    // *** This styling is an extra step which is likely not required. ***
+    //
+    // Why is it here? To ensure:
+    // 1. the element is able to have focus and selection.
+    // 2. if element was to flash render it has minimal visual impact.
+    // 3. less flakyness with selection and copying which **might** occur if
+    //    the textarea element is not visible.
+    //
+    // The likelihood is the element won't even render, not even a flash,
+    // so some of these are just precautions. However in IE the element
+    // is visible whilst the popup box asking the user for permission for
+    // the web page to copy to the clipboard.
+    //
+
+    // Place in top-left corner of screen regardless of scroll position.
+    textArea.style.position = 'fixed';
+    textArea.style.top = 0;
+    textArea.style.left = 0;
+
+    // Ensure it has a small width and height. Setting to 1px / 1em
+    // doesn't work as this gives a negative w/h on some browsers.
+    textArea.style.width = '2em';
+    textArea.style.height = '2em';
+
+    // We don't need padding, reducing the size if it does flash render.
+    textArea.style.padding = 0;
+
+    // Clean up any borders.
+    textArea.style.border = 'none';
+    textArea.style.outline = 'none';
+    textArea.style.boxShadow = 'none';
+
+    // Avoid flash of white box if rendered for any reason.
+    textArea.style.background = 'transparent';
+
+    textArea.value = text;
+
+    document.body.appendChild(textArea);
+
+    textArea.select();
+
+    try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    //console.log('Copying text command was ' + msg);
+    } catch (err) {
+        console.log('Oops, unable to copy');
+        alert('Копирование не поддерживается вашим браузером');
+    }
+
+    document.body.removeChild(textArea);
+}
+
+
 // Main
 $(document).ready(function() {
     $.extend($.tablesorter.defaults, {
@@ -104,8 +162,12 @@ $(document).ready(function() {
             "list", "date_from", "date_to", "authors", "geo_names", "image_path", "deal_type"
         ]
     };
-
+    
     var customAPI, url;
+    var API = 'http://cdn.pamyat-naroda.ru/ind/';
+    // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
+    // var API = 'https://python-flask-test-1153.appspot.com/';
+    var imagesCDN = 'http://cdn.pamyat-naroda.ru/imageload/';
 
     $('#apiURL').val('');
     $('#apiURL').on('change', function() {
@@ -114,15 +176,11 @@ $(document).ready(function() {
     jQuery.fn.get_data = function() {
         var tableID, link;
         if (jbd) {
-            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search';
-            /*url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/magazine/_search';*/
-            /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/magazine/_search';*/
+            url = customAPI || API + 'pamyat/magazine/_search';
             tableID = "#jbd_table";
         }
         else {
-            url = customAPI || 'https://cdn.pamyat-naroda.ru/ind/pamyat/document,map/_search';
-            /*url = customAPI || 'https://cdn.pamyatnaroda.mil.ru/ind/pamyat/document,map/_search';*/
-            /*url = customAPI || 'https://python-flask-test-1153.appspot.com/pamyat/document,map/_search';*/
+            url = customAPI || API + 'pamyat/document,map/_search';
             tableID = "#dou_table";
         }
         $('.results table, .pagination').hide();
@@ -150,19 +208,13 @@ $(document).ready(function() {
                 if (data.hits.total > 0) {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
-                        if (row['_type'] === 'magazine') {
-                            link = '<a href="' + 'https://pamyat-naroda.ru/jbd/' +
-                                row._id + '" target="_blank">' + row._id + '</a>';
-                        }
-                        else if (row['_type'] === 'document') {
-                            link = '<a href="' + 'https://pamyat-naroda.ru/dou/?docID=' +
-                                row._id + '" target="_blank">' + row._id + '</a>';
-                        }
-                        else if (row['_type'] === 'map') {
-                            link = row._id;
-                        }
+                        link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
+                            row._id + '" target="_blank">' + row._id + '</a>';
                         trHTML +=
-                            '<tr><td>' + link + '</td><td class="nowrap">' +
+                            '<tr><td>' + link + '</td><td><span class="path">' +
+                            '<img style="height: 16px;" src="images/copy.png" title="' +
+                            (row.fields.image_path ? imagesCDN + row.fields.image_path[0] : '') +
+                            '"></span></td><td class="nowrap">' +
                             (row.fields.fond ? row.fields.fond[0] : '') + '</td><td class="nowrap">' +
                             (row.fields.opis ? row.fields.opis[0] : '') + '</td><td class="nowrap">' +
                             (row.fields.delo ? row.fields.delo[0] : '') + '</td><td class="nowrap">' +
@@ -174,14 +226,13 @@ $(document).ready(function() {
                             trHTML += '<td class="nowrap">' + (row.fields.date_from &&
                                     row.fields.date_from[0]) +
                                 '</td><td class="nowrap">' + (row.fields.date_to &&
-                                    row
-                                    .fields.date_to[0]) + '</td></tr>';
+                                    row.fields.date_to[0]) + '</td>';
                         }
                         else {
                             trHTML += '<td class="nowrap">' +
-                                (row.fields.document_date_b && row.fields.document_date_b[
-                                    0]) + '</td></tr>';
+                                (row.fields.document_date_b && row.fields.document_date_b[0]) + '</td>';
                         }
+                        trHTML += '</tr>';
                     });
                     $('tbody', tableID).append(trHTML);
                     $(tableID).trigger("update");
@@ -414,5 +465,12 @@ $(document).ready(function() {
             type: 'inline',
             midClick: true
         }
+    });
+    
+    //Copy links
+    $('table.tablesorter').on('click', 'span.path', function() {
+        //console.log($(this).attr('path'));
+        var path = $(this).find('img').attr( "title" );
+        copyTextToClipboard(path);
     });
 });
