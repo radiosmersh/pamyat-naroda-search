@@ -164,10 +164,10 @@ $(document).ready(function() {
     };
     
     var customAPI, url;
-    var API = 'http://cdn.pamyat-naroda.ru/ind/';
+    var API = 'https://cdn.pamyat-naroda.ru/ind/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
     // var API = 'https://python-flask-test-1153.appspot.com/';
-    var imagesCDN = 'http://cdn.pamyat-naroda.ru/imageload/';
+    var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
     $('#apiURL').val('');
     $('#apiURL').on('change', function() {
@@ -177,6 +177,7 @@ $(document).ready(function() {
         var tableID, link;
         if (jbd) {
             url = customAPI || API + 'pamyat/magazine/_search';
+            // http://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search
             tableID = "#jbd_table";
         }
         else {
