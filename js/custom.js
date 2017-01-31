@@ -202,10 +202,20 @@ $(document).ready(function() {
                 response = data;
                 console.log('[*]Response:', data);
                 $('#res').val(JSON.stringify(data));
-                $('.message').html(
-                    'Загружено <b>' + data.hits.hits.length +
-                    '</b> результатов из <b>' + data.hits.total + '</b>'
-                );
+
+                if (data.hits.hits.length) {
+                    var firstRes = params.from + 1;
+                    var lastRes = params.from + data.hits.hits.length;
+                    $('.message').html(
+                        'Загружены результаты <b>' + firstRes + '-' + lastRes +
+                        '</b>  из <b>' + data.hits.total + '</b>'
+                    );
+                } else {
+                    $('.message').html(
+                        'Ничего не найдено'
+                    );
+                }
+                
                 if (data.hits.total > 0) {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
