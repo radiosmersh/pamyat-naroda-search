@@ -185,6 +185,7 @@ $(document).ready(function() {
             tableID = "#dou_table";
         }
         $('.results table, .pagination').hide();
+        $('.message').html('Идет поиск...');
         $('tbody', tableID).empty();
         $.ajax({
             url: url,
