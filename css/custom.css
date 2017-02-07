@@ -18,12 +18,12 @@ a:visited {
 }
 
 span.path {
-  cursor: pointer;
-  color: #387FB1;
+    cursor: pointer;
+    color: #387FB1;
 }
 
 span.path img {
-  margin-bottom: -3px;
+    margin-bottom: -3px;
 }
 
 .nowrap {
@@ -80,7 +80,8 @@ hr {
     font-size: .9em;
 }
 
-#advanced textarea, #advanced input {
+#advanced textarea,
+#advanced input {
     width: 100%;
     margin: 0.2em 0 0.2em;
 }
@@ -154,6 +155,8 @@ input[toggle]:checked + .pure-button:hover {
 input[type=submit].pure-button {
     font-weight: bold;
 }
+
+
 /*    input[type=checkbox],
 input[type=radio] {
     vertical-align: bottom;
@@ -186,6 +189,8 @@ input[type=number]::-webkit-outer-spin-button {
     border-color: #129FEA;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px rgba(102, 175, 233, .6);
 }
+
+
 /* Multiselect */
 
 .multiselect {
@@ -238,15 +243,33 @@ input[type=number]::-webkit-outer-spin-button {
 #checkboxes input[type=checkbox] {
     margin-right: .3em;
 }
+
+
 /****** Icon Font *******/
 
 @font-face {
     font-family: 'fontello';
-    src: url('../font/fontello.eot?30469634');
-    src: url('../font/fontello.eot?30469634#iefix') format('embedded-opentype'), url('../font/fontello.woff?30469634') format('woff'), url('../font/fontello.ttf?30469634') format('truetype'), url('../font/fontello.svg?30469634#fontello') format('svg');
+    src: url('../font/fontello.eot?58136594');
+    src: url('../font/fontello.eot?58136594#iefix') format('embedded-opentype'), url('../font/fontello.woff2?58136594') format('woff2'), url('../font/fontello.woff?58136594') format('woff'), url('../font/fontello.ttf?58136594') format('truetype'), url('../font/fontello.svg?58136594#fontello') format('svg');
     font-weight: normal;
     font-style: normal;
 }
+
+
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+
+
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+
+
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'fontello';
+    src: url('../font/fontello.svg?58136594#fontello') format('svg');
+  }
+}
+*/
 
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
@@ -280,29 +303,83 @@ input[type=number]::-webkit-outer-spin-button {
 .icon-cog:before {
     content: '\e800';
 }
+
+
 /* '' */
 
 .icon-info:before {
     content: '\e801';
 }
+
+
 /* '' */
 
-.icon-info-1:before {
+.icon-help:before {
     content: '\e802';
 }
+
+
 /* '' */
 
-.icon-info-2:before {
+.icon-floppy:before {
     content: '\e803';
 }
+
+
 /* '' */
 
-.icon-info-outline:before {
+.icon-download:before {
     content: '\e804';
 }
+
+
 /* '' */
+
+.icon-download-1:before {
+    content: '\e805';
+}
+
+
+/* '' */
+
+.icon-spin3:before {
+    content: '\e832';
+}
+
+
+/* '' */
+
+.icon-copy:before {
+    content: '\f0c5';
+}
+
+
+/* '' */
+
+.icon-download-cloud:before {
+    content: '\f0ed';
+}
+
+
+/* '' */
+
+.icon-help-1:before {
+    content: '\f128';
+}
+
+
+/* '' */
+
+.icon-image:before {
+    content: '\f1c5';
+}
+
+
+/* '' */
 
 .pure-button.icon {
     padding: .5em;
 }
+
+
 /****** End Icon Font *******/

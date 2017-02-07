@@ -40,16 +40,21 @@
                     </li>
                     </span>
                     <li class="pure-menu-item">
-                        <button type="reset" id="reset_dou" class="pure-button">Reset</button>
+                        <button type="reset" id="reset_dou" class="pure-button" title="Очистить форму">Reset</button>
+                    </li>
+                    <li class="pure-menu-item">
+                        <button type="button" id="save-file" class="pure-button icon" title="Сохранить данные в файл">
+                            <i class="icon-download"></i>
+                        </button>
                     </li>
                     <li class="pure-menu-item">
                         <label for="advanced_settings">
                             <input id="advanced_settings" type="checkbox" toggle>
-                            <span class="pure-button icon"><i class="icon-cog"></i></span>
+                            <span class="pure-button icon" title="Дополнительно"><i class="icon-cog"></i></span>
                         </label>
                     </li>
                     <li class="pure-menu-item">
-                        <button type="button" id="show-info" class="pure-button icon"><i class="icon-info"></i></button>
+                        <button type="button" id="show-info" class="pure-button icon" title="Помощь"><i class="icon-info"></i></button>
                     </li>
                 </ul>
             </div>
@@ -87,7 +92,7 @@
                         <input class="pure-input-1" type="text" id="doc_id" placeholder="ID документа">
                     </div>
                     <div class="pure-u-1-2 pure-u-sm-1-3">
-                        <input class="pure-input-1" type="number" id="size" placeholder="Количество" value='20' title="Количество" min=0 max=10000>
+                        <input class="pure-input-1" type="number" id="size" placeholder="Количество результатов" value='20' title="Количество результатов" min=0 max=10000>
                     </div>
                     <div class="pure-u-1-2 pure-u-sm-1-3">
                         <select class="pure-input-1" name="sort" id="sort">

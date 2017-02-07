@@ -72,9 +72,9 @@ function copyTextToClipboard(text) {
     textArea.select();
 
     try {
-    var successful = document.execCommand('copy');
-    var msg = successful ? 'successful' : 'unsuccessful';
-    //console.log('Copying text command was ' + msg);
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        //console.log('Copying text command was ' + msg);
     } catch (err) {
         console.log('Oops, unable to copy');
         alert('Копирование не поддерживается вашим браузером');
@@ -83,6 +83,20 @@ function copyTextToClipboard(text) {
     document.body.removeChild(textArea);
 }
 
+function downloadObject(text, filename, type) {
+    var file = new Blob([text], { type: type });
+    if (navigator.msSaveOrOpenBlob) {
+        navigator.msSaveOrOpenBlob(file, filename);
+    } else {
+        console.log('saving');
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(file);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+}
 
 // Main
 $(document).ready(function() {
@@ -157,12 +171,13 @@ $(document).ready(function() {
         // "sort": {
         //     "document_date_b": "asc"
         // },
-        "fields": ["operation", "id", "document_type", "document_number",
-            "document_date_b", "document_date_f", "document_name", "fond", "opis", "delo",
-            "list", "date_from", "date_to", "authors", "geo_names", "image_path", "deal_type"
+        "fields": ["id", "fond", "opis", "delo", "list", "document_number",
+            "document_name", "document_date_b", "document_date_f", "authors",
+            "document_type", "image_path", "date_from", "date_to", "geo_names", "deal_type",
+            "operation_name", "min_dolgota", "min_shirota", "max_dolgota", "max_shirota", "max_zoom"
         ]
     };
-    
+
     var customAPI, url;
     var API = 'https://cdn.pamyat-naroda.ru/ind/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
@@ -179,8 +194,7 @@ $(document).ready(function() {
             url = customAPI || API + 'pamyat/magazine/_search';
             // http://cdn.pamyat-naroda.ru/ind/pamyat/magazine/_search
             tableID = "#jbd_table";
-        }
-        else {
+        } else {
             url = customAPI || API + 'pamyat/document,map/_search';
             tableID = "#dou_table";
         }
@@ -216,7 +230,7 @@ $(document).ready(function() {
                         'Ничего не найдено'
                     );
                 }
-                
+
                 if (data.hits.total > 0) {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
@@ -239,8 +253,7 @@ $(document).ready(function() {
                                     row.fields.date_from[0]) +
                                 '</td><td class="nowrap">' + (row.fields.date_to &&
                                     row.fields.date_to[0]) + '</td>';
-                        }
-                        else {
+                        } else {
                             trHTML += '<td class="nowrap">' +
                                 (row.fields.document_date_b && row.fields.document_date_b[0]) + '</td>';
                         }
@@ -289,8 +302,7 @@ $(document).ready(function() {
                     }
                 });
             }
-        }
-        else {
+        } else {
             if ($("#date_beg").val().trim() != '') {
                 params.query.filtered.filter.bool.must.push({
                     "range": {
@@ -397,8 +409,7 @@ $(document).ready(function() {
             }
             if (sort == "id") {
                 temp[sort] = "desc";
-            }
-            else {
+            } else {
                 temp[sort] = "asc";
             }
             params.sort = temp;
@@ -433,6 +444,36 @@ $(document).ready(function() {
         }
     });
 
+
+    function json2csv(hits) {
+        var fields = ["id", "fond", "opis", "delo", "list", "document_number",
+            "document_name", "document_date_b", "document_date_f", "authors",
+            "document_type", "image_path", "date_from", "date_to", "geo_names", "deal_type", "operation_name",
+            "min_dolgota", "min_shirota", "max_dolgota", "max_shirota", "max_zoom"
+        ];
+        var csv = '\ufeff' + fields.join(';') + '\n';
+        hits.forEach(function(item) {
+            var row = '';
+            fields.forEach(function(field) {
+                var value = item.fields[field] ? '"' + item.fields[field][0] + '"' : '""';
+                value = value.replace(/[\r\n]/g, '');
+                row += value;
+                row += ';';
+            });
+            row += '"' + 'https://pamyat-naroda.ru/documents/view/?id=' + item._id + '"';
+            row += '\n';
+            csv += row;
+        });
+        return csv;
+    }
+    $('#save-file').on('click', function(e) {
+        if (typeof response !== 'undefined') {
+            //var data = JSON.stringify(response, null, 2);
+            var data = json2csv(response.hits.hits);
+            downloadObject(data, 'data.csv', 'text/csv;charset=utf-8;');
+        }
+    });
+
     $('#reset_dou').on('click', function(e) {
         e.preventDefault();
         $('#dou')[0].reset();
@@ -460,8 +501,7 @@ $(document).ready(function() {
     $("#checkboxes div input").on('change', function() {
         if ($("#checkboxes div input[type=checkbox]:checked").length == 0) {
             $('#reset_checkboxes').prop('checked', true);
-        }
-        else {
+        } else {
             $('#reset_checkboxes').prop('checked', false);
         }
     });
@@ -478,11 +518,11 @@ $(document).ready(function() {
             midClick: true
         }
     });
-    
+
     //Copy links
     $('table.tablesorter').on('click', 'span.path', function() {
         //console.log($(this).attr('path'));
-        var path = $(this).find('img').attr( "title" );
+        var path = $(this).find('img').attr("title");
         copyTextToClipboard(path);
     });
 });
