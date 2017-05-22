@@ -151,14 +151,10 @@ $(document).ready(function() {
     });
     var params_template = {
         "query": {
-            "filtered": {
-                "query": {
-                    "bool": {
-                        "must": [],
-                        "should": [],
-                        "minimum_should_match": 1
-                    }
-                },
+            "bool": {
+                "must": [],
+                "should": [],
+                //"minimum_should_match": 1,
                 "filter": {
                     "bool": {
                         "must": []
@@ -171,17 +167,20 @@ $(document).ready(function() {
         // "sort": {
         //     "document_date_b": "asc"
         // },
-        "fields": ["id", "fond", "opis", "delo", "list", "document_number",
-            "document_name", "document_date_b", "document_date_f", "authors",
-            "document_type", "image_path", "date_from", "date_to", "geo_names", "deal_type",
-            "operation_name", "min_dolgota", "min_shirota", "max_dolgota", "max_shirota", "max_zoom"
-        ]
+        "_source": {
+            "includes": [ "id", "fond", "opis", "delo", "list", "document_number",
+                "document_name", "document_date_b", "document_date_f", "authors",
+                "document_type", "image_path", "date_from", "date_to", "geo_names", "deal_type",
+                "operation_name", "min_dolgota", "min_shirota", "max_dolgota", "max_shirota", "max_zoom"
+                ],
+            "excludes": []
+        },
     };
 
     var customAPI, url;
-    var API = 'https://cdn.pamyat-naroda.ru/ind/';
+    // var API = 'https://cdn.pamyat-naroda.ru/ind/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
-    // var API = 'https://python-flask-test-1153.appspot.com/';
+    var API = 'https://python-flask-test-1153.appspot.com/';
     var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
     $('#apiURL').val('');
@@ -205,7 +204,7 @@ $(document).ready(function() {
             url: url,
             type: "POST",
             data: JSON.stringify(params),
-            contentType: 'text/plain',
+            contentType: 'text/plain', //'application/json',
             dataType: 'json',
             error: function(data) {
                 response = data;
@@ -239,23 +238,23 @@ $(document).ready(function() {
                         trHTML +=
                             '<tr><td>' + link + '</td><td><span class="path">' +
                             '<img style="height: 16px;" src="images/copy.png" title="' +
-                            (row.fields.image_path ? imagesCDN + row.fields.image_path[0] : '') +
+                            (row._source.image_path ? row._source.image_path : '') +
                             '"></span></td><td class="nowrap">' +
-                            (row.fields.fond ? row.fields.fond[0] : '') + '</td><td class="nowrap">' +
-                            (row.fields.opis ? row.fields.opis[0] : '') + '</td><td class="nowrap">' +
-                            (row.fields.delo ? row.fields.delo[0] : '') + '</td><td class="nowrap">' +
-                            (row.fields.list ? row.fields.list[0] : '') + '</td><td>' +
-                            (row.fields.document_name && row.fields.document_name[0]) +
+                            (row._source.fond ? row._source.fond : '') + '</td><td class="nowrap">' +
+                            (row._source.opis ? row._source.opis : '') + '</td><td class="nowrap">' +
+                            (row._source.delo ? row._source.delo : '') + '</td><td class="nowrap">' +
+                            (row._source.list ? row._source.list : '') + '</td><td>' +
+                            (row._source.document_name && row._source.document_name) +
                             '</td><td>' +
-                            (row.fields.authors && row.fields.authors[0]) + '</td>';
+                            (row._source.authors && row._source.authors) + '</td>';
                         if (jbd) {
-                            trHTML += '<td class="nowrap">' + (row.fields.date_from &&
-                                    row.fields.date_from[0]) +
-                                '</td><td class="nowrap">' + (row.fields.date_to &&
-                                    row.fields.date_to[0]) + '</td>';
+                            trHTML += '<td class="nowrap">' + (row._source.date_from &&
+                                    row._source.date_from) +
+                                '</td><td class="nowrap">' + (row._source.date_to &&
+                                    row._source.date_to) + '</td>';
                         } else {
                             trHTML += '<td class="nowrap">' +
-                                (row.fields.document_date_b && row.fields.document_date_b[0]) + '</td>';
+                                (row._source.document_date_b && row._source.document_date_b) + '</td>';
                         }
                         trHTML += '</tr>';
                     });
@@ -285,7 +284,7 @@ $(document).ready(function() {
         jbd = $('input[name=switch]:checked').val() == 'jbd' ? true : false;
         if (jbd) {
             if ($("#date_beg").val().trim() != '') {
-                params.query.filtered.filter.bool.must.push({
+                params.query.bool.filter.bool.must.push({
                     "range": {
                         "date_to": {
                             "gte": $("#date_beg").val().trim()
@@ -294,7 +293,7 @@ $(document).ready(function() {
                 });
             }
             if ($("#date_end").val().trim() != '') {
-                params.query.filtered.filter.bool.must.push({
+                params.query.bool.filter.bool.must.push({
                     "range": {
                         "date_from": {
                             "lte": $("#date_end").val().trim()
@@ -304,7 +303,7 @@ $(document).ready(function() {
             }
         } else {
             if ($("#date_beg").val().trim() != '') {
-                params.query.filtered.filter.bool.must.push({
+                params.query.bool.filter.bool.must.push({
                     "range": {
                         "document_date_b": {
                             "gte": $("#date_beg").val().trim()
@@ -313,7 +312,7 @@ $(document).ready(function() {
                 });
             }
             if ($("#date_end").val().trim() != '') {
-                params.query.filtered.filter.bool.must.push({
+                params.query.bool.filter.bool.must.push({
                     "range": {
                         "document_date_b": {
                             "lte": $("#date_end").val().trim()
@@ -322,43 +321,53 @@ $(document).ready(function() {
                 });
             }
             $("#checkboxes div input:checked").each(function(k, v) {
-                params.query.filtered.query.bool.should.push({
+                params.query.bool.should.push({
                     "match_phrase": {
-                        "document_type": v.value.trim()
+                        "document_type": {
+                            "query": v.value.trim(),
+                            //"fuzziness": "1"    // Карты и Карта fix
+                        }
                     }
                 });
+                if (v.value.trim() === "Карты") {
+                    params.query.bool.should.push({
+                    "match_phrase": {
+                        "document_type": "Карта"
+                    }
+                });
+                }
             });
         }
         if ($("#fond").val().trim() != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 "match": {
                     "fond": $("#fond").val().trim()
                 }
             });
         }
         if ($("#opis").val().trim() != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 "match": {
                     "opis": $("#opis").val().trim()
                 }
             });
         }
         if ($("#delo").val().trim() != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 "match": {
                     "delo": $("#delo").val().trim()
                 }
             });
         }
         if ($("#doc_id").val().trim() != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 "term": {
                     "id": $("#doc_id").val().trim()
                 }
             });
         }
         // if ($("#doc_name").val().trim() != '') {
-        //     params.query.filtered.query.bool.must.push({
+        //     params.query.bool.must.push({
         //         "match": {
         //             "document_name": {
         //                 "query": $("#doc_name").val().trim(),
@@ -370,7 +379,7 @@ $(document).ready(function() {
 
         var document_name = $("#doc_name").val().trim();
         if (document_name != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 "query_string": {
                     "query": document_name,
                     "default_field": "document_name",
@@ -382,7 +391,7 @@ $(document).ready(function() {
 
         var author = $("#author").val().trim();
         if (author != '') {
-            params.query.filtered.query.bool.must.push({
+            params.query.bool.must.push({
                 //     "match_phrase": {
                 //         "authors": {
                 //             "query": author,
@@ -413,6 +422,10 @@ $(document).ready(function() {
                 temp[sort] = "asc";
             }
             params.sort = temp;
+        }
+
+        if (params.query.bool.should.length) {
+            params.query.bool["minimum_should_match"] = 1;
         }
 
         $('#params').val(JSON.stringify(params));
@@ -451,11 +464,11 @@ $(document).ready(function() {
             "document_type", "image_path", "date_from", "date_to", "geo_names", "deal_type", "operation_name",
             "min_dolgota", "min_shirota", "max_dolgota", "max_shirota", "max_zoom"
         ];
-        var csv = '\ufeff' + fields.join(';') + '\n';
+        var csv = '\ufeff' + fields.join(';') + ';"URL"\n';
         hits.forEach(function(item) {
             var row = '';
             fields.forEach(function(field) {
-                var value = item.fields[field] ? '"' + item.fields[field][0] + '"' : '""';
+                var value = item._source[field] ? '"' + item._source[field] + '"' : '""';
                 value = value.replace(/[\r\n]/g, '');
                 row += value;
                 row += ';';
