@@ -98,6 +98,10 @@ function downloadObject(text, filename, type) {
     }
 }
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 // Main
 $(document).ready(function() {
     $.extend($.tablesorter.defaults, {
@@ -164,9 +168,9 @@ $(document).ready(function() {
         },
         "size": 20,
         "from": 0,
-        // "sort": {
-        //     "document_date_b": "asc"
-        // },
+         "sort": {
+             "document_date_b": "asc"
+         },
         "_source": {
             "includes": [ "id", "fond", "opis", "delo", "list", "document_number",
                 "document_name", "document_date_b", "document_date_f", "authors",
@@ -233,8 +237,17 @@ $(document).ready(function() {
                 if (data.hits.total > 0) {
                     var trHTML = '';
                     data.hits.hits.forEach(function(row) {
-                        link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
-                            row._id + '" target="_blank">' + row._id + '</a>';
+                        if (row._source.max_shirota && row._source.max_dolgota &&
+                            row._source.min_shirota && row._source.min_dolgota) {
+                            var midLat = (row._source.max_shirota + row._source.min_shirota)/2;
+                            var midLon = (row._source.max_dolgota + row._source.min_dolgota)/2;
+                            link = '<a href="https://vnr.github.io/wwii-maps/index.html#center=' + encodeURIComponent([midLat, midLon]) +
+                                '&zoom=7&type=urlMap&path=' + encodeURIComponent(row._source.image_path) +
+                                '" target="_blank">M_' + row._id + '</a>';
+                        } else {
+                            link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
+                                row._id + '" target="_blank">' + row._id + '</a>';
+                        }
                         trHTML +=
                             '<tr><td>' + link + '</td><td><span class="path">' +
                             '<img style="height: 16px;" src="images/copy.png" title="' +
@@ -338,6 +351,41 @@ $(document).ready(function() {
                 }
             });
         }
+
+        try {
+            var coords = $("#geoPoint").val().trim().replace(/,/g, '.').split(' ');
+            if (coords.length == 2 && isNumeric(coords[0]) && isNumeric(coords[1])) {
+                var shirota = coords[0];
+                var dolgota = coords[1];
+                params.query.bool.filter.bool.must.push(
+                    {
+                    "range": {
+                        "max_shirota": {
+                            "gte": shirota
+                        }
+                    }},
+                    {
+                    "range": {
+                        "min_shirota": {
+                            "lte": shirota
+                        }
+                    }},
+                    {
+                    "range": {
+                        "max_dolgota": {
+                            "gte": dolgota
+                        }
+                    }},
+                    {
+                    "range": {
+                        "min_dolgota": {
+                            "lte": dolgota
+                        }
+                    }}
+                );
+            }
+        } catch (err) {}
+
         if ($("#fond").val().trim() != '') {
             params.query.bool.must.push({
                 "match": {
@@ -410,19 +458,19 @@ $(document).ready(function() {
             params.size = parseInt($("#size").val().trim());
         }
 
-        var sort = $("#sort").val().trim();
-        if (sort && sort !== 'match') {
-            var temp = {};
-            if (jbd && sort == "document_date_b") {
-                sort = "date_from";
-            }
-            if (sort == "id") {
-                temp[sort] = "desc";
-            } else {
-                temp[sort] = "asc";
-            }
-            params.sort = temp;
-        }
+//        var sort = $("#sort").val().trim();
+//        if (sort && sort !== 'match') {
+//            var temp = {};
+//            if (jbd && sort == "document_date_b") {
+//                sort = "date_from";
+//            }
+//            if (sort == "id") {
+//                temp[sort] = "desc";
+//            } else {
+//                temp[sort] = "asc";
+//            }
+//            params.sort = temp;
+//        }
 
         if (params.query.bool.should.length) {
             params.query.bool["minimum_should_match"] = 1;
