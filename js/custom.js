@@ -182,9 +182,9 @@ $(document).ready(function() {
     };
 
     var customAPI, url;
-    // var API = 'https://cdn.pamyat-naroda.ru/ind/';
+    // var API = 'https://cdn.pamyat-naroda.ru/ind2/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
-    var API = 'https://python-flask-test-1153.appspot.com/';
+    var API = 'https://python-flask-test-1153.appspot.com/obd/';
     var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
     $('#apiURL').val('');
