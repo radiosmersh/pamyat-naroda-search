@@ -168,9 +168,9 @@ $(document).ready(function() {
         },
         "size": 20,
         "from": 0,
-         "sort": {
-             "document_date_b": "asc"
-         },
+//         "sort": {
+//             "document_date_b": "asc"
+//         },
         "_source": {
             "includes": [ "id", "fond", "opis", "delo", "list", "document_number",
                 "document_name", "document_date_b", "document_date_f", "authors",
@@ -243,7 +243,7 @@ $(document).ready(function() {
                             var midLon = (row._source.max_dolgota + row._source.min_dolgota)/2;
                             link = '<a href="https://vnr.github.io/wwii-maps/index.html#center=' + encodeURIComponent([midLat, midLon]) +
                                 '&zoom=7&type=urlMap&path=' + encodeURIComponent(row._source.image_path) +
-                                '" target="_blank">M_' + row._id + '</a>';
+                                '" target="_blank">' + row._id + '_M</a>';
                         } else {
                             link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
@@ -458,19 +458,19 @@ $(document).ready(function() {
             params.size = parseInt($("#size").val().trim());
         }
 
-//        var sort = $("#sort").val().trim();
-//        if (sort && sort !== 'match') {
-//            var temp = {};
-//            if (jbd && sort == "document_date_b") {
-//                sort = "date_from";
-//            }
-//            if (sort == "id") {
-//                temp[sort] = "desc";
-//            } else {
-//                temp[sort] = "asc";
-//            }
-//            params.sort = temp;
-//        }
+        var sort = $("#sort").val().trim();
+        if (sort && sort !== 'match') {
+            var temp = {};
+            if (jbd && sort == "document_date_b") {
+                sort = "date_from";
+            }
+            if (sort == "id") {
+                temp[sort] = "desc";
+            } else {
+                temp[sort] = "asc";
+            }
+            params.sort = temp;
+        }
 
         if (params.query.bool.should.length) {
             params.query.bool["minimum_should_match"] = 1;
