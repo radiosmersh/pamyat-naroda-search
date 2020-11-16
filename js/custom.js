@@ -182,9 +182,10 @@ $(document).ready(function() {
     };
 
     var customAPI, url;
-    var API = 'https://cdn.pamyat-naroda.ru/ind/';
+    //var API = 'http://localhost:7777/obd/';
+    //var API = 'https://cdn.pamyat-naroda.ru/ind/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
-    //var API = 'https://python-flask-test-1153.appspot.com/obd/';
+    var API = 'https://python-flask-test-1153.appspot.com/obd/';
     //var API = 'https://flask-pamyat-naroda.1d35.starter-us-east-1.openshiftapps.com/obd/';
     var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
@@ -262,8 +263,7 @@ $(document).ready(function() {
                             '</td><td>' +
                             (row._source.authors && row._source.authors) + '</td>';
                         if (jbd) {
-                            trHTML += '<td class="nowrap">' + (row._source.date_from &&
-                                    row._source.date_from) +
+                            trHTML += '<td class="nowrap">' + (row._source.date_from || '') +
                                 '</td><td class="nowrap">' + (row._source.date_to &&
                                     row._source.date_to) + '</td>';
                         } else {
