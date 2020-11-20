@@ -185,7 +185,8 @@ $(document).ready(function() {
     //var API = 'http://localhost:7777/obd/';
     //var API = 'https://cdn.pamyat-naroda.ru/ind/';
     // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
-    var API = 'https://python-flask-test-1153.appspot.com/obd/';
+    //var API = 'https://python-flask-test-1153.appspot.com/obd/';
+    var API = 'https://obd-search.herokuapp.com/obd/';
     //var API = 'https://flask-pamyat-naroda.1d35.starter-us-east-1.openshiftapps.com/obd/';
     var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
