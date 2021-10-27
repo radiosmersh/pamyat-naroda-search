@@ -184,9 +184,10 @@ $(document).ready(function() {
     var customAPI, url;
     //var API = 'http://localhost:7777/obd/';
     //var API = 'https://cdn.pamyat-naroda.ru/ind/';
-    // var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
+    //var API = 'https://cdn.pamyatnaroda.mil.ru/ind/';
     //var API = 'https://python-flask-test-1153.appspot.com/obd/';
     var API = 'https://obd-search.herokuapp.com/obd/';
+    //var API = 'https://obd-search.azurewebsites.net/obd/';
     //var API = 'https://flask-pamyat-naroda.1d35.starter-us-east-1.openshiftapps.com/obd/';
     var imagesCDN = 'https://cdn.pamyat-naroda.ru/imageload/';
 
@@ -244,9 +245,10 @@ $(document).ready(function() {
                             row._source.min_shirota && row._source.min_dolgota) {
                             var midLat = (row._source.max_shirota + row._source.min_shirota)/2;
                             var midLon = (row._source.max_dolgota + row._source.min_dolgota)/2;
-                            link = '<a href="https://vnr.github.io/wwii-maps/index.html#center=' + encodeURIComponent([midLat, midLon]) +
+                            link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
+                                row._id + '" target="_blank">' + row._id + '</a>' + ' <a href="https://vnr.github.io/wwii-maps/index.html#center=' + encodeURIComponent([midLat, midLon]) +
                                 '&zoom=7&type=urlMap&path=' + encodeURIComponent(row._source.image_path) +
-                                '" target="_blank">' + row._id + '_M</a>';
+                                '" target="_blank">(M)</a>';
                         } else {
                             link = '<a href="' + 'https://pamyat-naroda.ru/documents/view/?id=' +
                                 row._id + '" target="_blank">' + row._id + '</a>';
